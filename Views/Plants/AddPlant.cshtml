@@ -1,0 +1,52 @@
+﻿@model LeafLINQWeb.Models.PlantModel;
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+        <div class="main-header">
+            <h2>Plants</h2>
+            <a class="btn primary" asp-controller="Plants" asp-action="AddPlant"><i class="fa-solid fa-circle-plus"></i> Add Plant</a>
+        </div>
+        @using (Html.BeginForm("AddNewPlant", "Plants", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="container">
+                <div class="column">
+                    <div class="error">@ViewBag.Error</div>
+                    <div class="user-input">
+                        @Html.LabelFor(model => model.Name)
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                    <div class="user-input">
+                        @Html.LabelFor(model => model.Desc)
+                        @Html.TextAreaFor(model => model.Desc, new { @class = "form-control", required = "required", rows = "4" })
+                        @Html.ValidationMessageFor(model => model.Desc)
+                    </div>
+                    <div class="user-input">
+                        @Html.LabelFor(model => model.Location)
+                        @Html.TextBoxFor(model => model.Location, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(model => model.Location)
+                    </div>
+                    <input class="btn primary" type="submit" value="Submit" />
+                </div>
+                <div class="column">
+                    <div class="user-input">
+                        @Html.LabelFor(model => model.ImageFile)
+                        <input type="file" class="form-control profile-file" id="picture" name="ImageFile" accept="image/*">
+                    </div>
+                    <div class="user-input">
+                        @Html.LabelFor(model => model.Level)
+                        @Html.TextBoxFor(model => model.Level, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(model => model.Level)
+                    </div>
+                    <div class="user-input">
+                        @Html.LabelFor(model => model.DeviceId)
+                        @Html.ValidationMessageFor(model => model.DeviceId)
+                        <br />
+                        <select asp-for="@Model.DeviceId" asp-items="Model.PlantDeviceList" class="form-control"></select>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

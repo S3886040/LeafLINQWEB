@@ -1,0 +1,62 @@
+﻿@model LeafLINQWeb.Models.UserManagement.UserModelWithFile;
+
+
+@{
+    ViewData["Title"] = "Add User";
+}
+@{
+    if(Model.PicUrl == null)
+    {
+        Model.PicUrl = "/images/placeholder-profile.jpeg";
+    }
+}
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+        <div class="main-header">
+            <h2>Add User</h2>
+        </div>
+        <form asp-controller="UserManagement" asp-action="AddUserProfile" method="post" enctype="multipart/form-data">
+            <div class="container">
+
+                <input type="hidden" class="form-control" id="PicURL" name="PicUrl" value="@Model.PicUrl" required>
+                    <div class="column">
+                    @Html.ValidationMessage("Error", new { @class = "text-danger"})
+                        <div class="user-input">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" name="FullName" value="@Model.FullName" required>
+                        @Html.ValidationMessage("FullName", new { @class = "text-danger"})
+                        </div>
+                        <div class="user-input">
+                            <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required>
+                        @Html.ValidationMessage("Email", new { @class = "text-danger"})
+                        </div>
+                    <div class="user-input">
+                        <label for="UserType">Access Level</label>
+                        <select id="UserType" name="UserType">
+                            <option value="A">Admin</option>
+                            <option value="U" selected>Regular User</option>
+                        </select>
+                    </div>
+                    @Html.ValidationMessage("UserType", new { @class = "text-danger"})
+                    <div class="user-input">
+                        <label for="picture">Profile Picture</label>
+                        <input type="file" class="form-control profile-file" id="picture" name="ImageFile" accept="image/*">
+                    </div>
+                        <input class="btn primary" type="submit" value="Add User" />
+                    </div>
+                <div class="column">
+                    <div class="profile-section-img" style="background-image: url('@Model.PicUrl');"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="~/js/profileImageJs.js" asp-append-version="true"></script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,158 @@
+================================================================================
+LeafLINQ Hardware Setup
+================================================================================
+
+Welcome to the LeafLINQ System! This document provides detailed instructions on setting up and configuring your LeafLINQ Access Point and Plant Node devices. Follow these steps carefully to ensure a smooth installation and start monitoring your plants with our innovative technology.
+
+Product Overview:
+--------------------------------------------------------------------------------
+The LeafLINQ system consists of two main components:
+1. Access Point Node: Acts as a hub, connecting the Plant Nodes to the internet.
+2. Plant Node: Monitors various environmental parameters around the plant using integrated sensors.
+
+What’s in the Box:
+--------------------------------------------------------------------------------
+- 1 x Access Point Node
+- 3 x Plant Nodes
+- Power adapters
+- Quick Start Guide
+- WiFi Password Card
+
+Installation Instructions:
+--------------------------------------------------------------------------------
+1. Power Setup:
+   - Connect the Access Point Node and the Plant Node to their respective power adapters and plug into a power outlet.
+
+2. Sensor Setup:
+   - Insert the Soil Moisture Sensor into the soil of the plant you wish to monitor.
+
+3. Connect to Access Point:
+   - From your device (smartphone, tablet, or PC), search for the WiFi network broadcast by the Access Point Node.
+   - Use the supplied password (found on the WiFi Password Card) to connect to this network.
+
+4. Configuration:
+   - Open a web browser and navigate to the following address: 192.168.4.1
+   - You will see a configuration form where you need to enter your local WiFi network details (SSID and password).
+   - Submit the form by clicking the 'Submit' button.
+
+5. Finalising Setup:
+   - The device will attempt to connect to your local WiFi network. Upon successful connection, the Green LED on the Access Point Node will light up.
+   - If the Green LED does not light up, re-enter your WiFi details to ensure they are correct and try again.
+
+6. Troubleshooting:
+   - If you continue to experience issues with connecting to your local WiFi network, please restart the device and repeat the configuration steps.
+   - If problems persist, contact our support team for assistance.
+
+Support:
+--------------------------------------------------------------------------------
+If you encounter any issues during installation or have questions about your LeafLINQ system, please contact our support team.
+
+Email: s3255561@student.rmit.edu.au
+
+Thank you for choosing LeafLINQ. We are committed to providing you with quality service and support.
+================================================================================
+
+================================================================================
+LeafLINQ Web Setup
+================================================================================
+
+Azure Resources Access:
+-------------------------------------------------------------------------------
+To access the cloud resources, you will require these login details to access Azure.
+
+Email: leafLINQAdmin@leaflinq.com
+Password: ystmxoWWr@3f
+URL: https://azure.microsoft.com/en-au
+
+Multi factor authentication has been disabled but it is advised that a phone number is added to the account once logged in to secure the account from potential attack.
+
+Azure Resources:
+--------------------------------------------------------------------------------
+1. Resource Group –
+	Name: leaflinq
+	Description: A resource Group is container that houses all related resources into a group. 
+2. Web App Service – 
+	App name: LeafLINQ
+	URL: https://leaflinq.azurewebsites.net/
+	Description: This is a provision which houses runs and maintains the web application at serves the website via a URL. HTTPs is enabled by default.
+3. Web App Service –
+	App name: leaflinqwebappapi
+	URL: https://leaflinqwebappapi.azurewebsites.net/
+	Description: This is a provision which houses runs and maintains the web application at serves the website via a URL. HTTPs is enabled by default.
+4. Azure SQL Server – 
+	Name: leaflinqserver
+	Description: This is a managed SQL Server to build manage and maintain relational data.
+5. Azure SQL Database –
+	Name: leaflinqdb
+	Description: Managed database instance housed in the Azure Cloud.
+6. Storage Account –
+	Name: leaflinq
+	Description: A storage blob which is used to store profile images uploaded by the users.
+7. Communication Service –
+	Name: leaf-linq-mastercomservice
+	Description: A multi-channel communication API for adding voice, video, chat and email services to your application.
+8. Email Communication Service –
+	Name: leaf-linq-comservice
+	Description: An email communication channel which engages with leaf-linq-mastercomservice to send emails to users from our domain.
+
+
+Web Application Source Code
+--------------------------------------------------------------------------------
+Hosting URL: https://leaflinq.azurewebsites.net/
+GitHub URL: https://github.com/ProgrammingProject2024SP1Team6/LeafLINQWeb
+Runtime Stack: .NET 7 (STS)
+Framework: ASP.NET Core 7
+
+Web API Source Code
+--------------------------------------------------------------------------------
+Url: https://leaflinqwebappapi.azurewebsites.net/
+GitHub URL: https://github.com/ProgrammingProject2024SP1Team6/LeafLINQWebAPI
+Runtime Stack: .NET 7 (STS)
+Framework: ASP.NET Core Web API 7
+
+
+Deployment Process
+--------------------------------------------------------------------------------
+Deployment is managed through Azures Continuous delivery and Continuous integration Pipelines. The Web application and Web API are set to trigger on push changes to the repository branch main, which then runs the deployment pipeline via GitHub Actions and the YAML script in the repository directory /.github. 
+
+Deployment logs can then be viewed in GitHub by clicking on the “Production” link from the main repo page under Deployments. If Deployment fails for any reason, search in these logs for an explanation and work to rectify the issue detailed in the log error. It is important to note that deployment will not automatically retry or rollback on its own. You will have to manually locate the change which is causing the error, use git to revert to a previous working commit or fix the error and push the changes again to the main branch to redeploy. In the meantime, the page may be unavailable until the redeployment is confirmed. 
+
+
+App Service Logs
+--------------------------------------------------------------------------------
+Sometimes the running of the web application may not go to plan, and you may wish to see the server logs. You can access these logs via the Log Stream section of the Web App Service in Azure. 
+
+Simply login to azure and navigate to the Web app service from the home page, and then select “Log stream”. This will provide a live stream of application logs. If log stream is unavailable navigate to the “App Service Logs” blade and from there toggle the "Application Logging (Filesystem)" to ON. 
+
+
+Scaling
+--------------------------------------------------------------------------------
+The Application is currently set at the Free tier and will remain so during the handover of the product. If usage is peaks past the 60 minutes per day of CPU time included in the Free tier option. Upgrading the provision is advised, as stoppages may occur until the beginning of a new billing day when the CPU time will be reset. CPU time can be monitored via the “Quotas” section of the app service blade. 
+
+To Scale up navigate to the “Scale Up (App Service Plan)” blade in the navigation bar. From there choose a suitable option based on current and future CPU time usage and hardware requirements.
+
+
+Database Backups
+--------------------------------------------------------------------------------
+Backups are automatically stored by the Azure Database SQL Server with a backup frequency of 12 hours and are stored for a duration of 7 days. As stipulated under the current plan assigned to the database provision. To upgrade the frequency and or retention of backup policy, you must first upgrade to a higher DTU tier using the database portal and then amend the retention policy using the SQL server resource.
+
+To restore the database to an earlier version, you can access the backup using the leaflinqserver resource from your Azure home page list. Once here go to the Backups link located in the Data Management drop down box of the side bar. And then you can choose the backup you wish to replace your current database from the list provided. Once you’ve clicked through the options and created a new database including the old data. You will now have to point your Web API source code to the new database. 
+
+
+Super User
+--------------------------------------------------------------------------------
+In the event of malicious activity by an Admin user, e.g. an admin deletes all users and information or locks all other users out of the system. A super user has been added. This super user has the standard admin access but is invisible to others users accessing the system and cannot be deleted or edited by any other admin. It has been placed as a fail-safe in the event of malicious activity. For Login details of the super user see below.
+
+Login Email: superuser@super.com
+Password: aoXLOhX@CNA#NemBnWmj
+
+
+Storage Account
+--------------------------------------------------------------------------------
+URL Access to the leaf-linq-images storage container is publicly available and not protected by any access protocols. And as such all files within are viewable at any time. As this is an internally used application and no such security stipulations were expressed regarding the privacy of profile pictures stored in the cloud. As such, images are available via direct URL link pointing to the container. And file names are saved as the user id which was selected for its uniqueness.
+
+URL Example - https://leaflinq.blob.core.windows.net/leaf-linq-images/1.png
+
+
+
+

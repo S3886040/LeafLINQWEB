@@ -1,0 +1,472 @@
+﻿@model LeafLINQWeb.Models.PlantModel;
+@using Microsoft.AspNetCore.Http;
+
+@{
+    ViewData["Title"] = Model.Name;
+
+    var accessLevel = Context.Session.GetString(SessionKeys.UserType);
+
+    var plantsName = Model.Name;
+    var plantDescription = Model.Desc;
+    var plantsLocation = Model.Location;
+    var plantPicture = Model.PicUrl;
+    var lastWateredDate = Model.LastWateredDate.ToShortDateString();
+    var healthCheckStatus = Model.HealthCheckStatus;
+
+}
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+        <div class="main-header">
+            <h2>Plants</h2>
+            <a class="btn primary" asp-controller="Plants" asp-action="AddPlant"><i class="fa-solid fa-circle-plus"></i> Add Plant</a>
+        </div>
+        <div class="container">
+            <div class="column">
+                <div class="content-module">
+                    <div class="profile-section">
+                        <div class="container">
+                            <div class="column">
+                                <div class="profile-section-img" style="background-image: url('@plantPicture');"></div>
+                            </div>
+                            <div class="column">
+                                <div class="description">
+                                    <span>@ViewBag.SuccessMessage</span>
+                                    <h3>@plantsName</h3>
+                                    <p>@plantDescription</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabs-section">
+                        <!--Plant tabs-->
+                        <ul class="tabs" id="tabPlants">
+                            <li class="plant-tab active" data-tab="reports">Reports</li>
+                            <li class="plant-tab" data-tab="device-status">Device Status</li>
+                            <li class="plant-tab" data-tab="location">Location</li>
+                            <li class="plant-tab" data-tab="edit">Edit</li>
+                        </ul>
+                        <div class="tab-content-1 active" id="reports">
+                            <!--Reports tabs-->
+                            <div class="tabs-section" id="tabReports">
+                                <ul class="tabs">
+                                    <li class="active report-tab" data-tab="dailyReports">Daily</li>
+                                    <li class="report-tab" data-tab="monthlyReports">Monthly</li>
+                                </ul>
+                                <!--Daily Reports-->
+                                <div class="tab-content-2 active" id="dailyReports">
+                                    @if (Model.PlantReport.DailyReports != null)
+                                    {
+                                        var Temperature = Model.PlantReport.DailyReports.AverageTemperature?.ToString("0.##");
+                                        var HealthState = Model.HealthCheckStatus;
+                                        var SoilMoisture = Model.PlantReport.DailyReports.AverageSoilMoisture?.ToString("0.##");
+                                        var Humidity = Model.PlantReport.DailyReports.AverageHumidity?.ToString("0.##");
+                                        var LightIntensity = Model.PlantReport.DailyReports.AverageLightIntensity?.ToString("0.##");
+
+                                        <div class="container">
+                                            <div class="column-3">
+                                                <div class="temperature">
+                                                    <h3>@Temperature °C</h3>
+                                                    <h4>Temperature</h4>
+                                                </div>
+                                                <button class="btn primary" id="downloadDailyReports">Download CSV</button>
+                                            </div>
+                                            <div class="column-9">
+                                                <div class="container">
+                                                    <div class="column">
+                                                        <div class="stat">
+                                                            <div class="stat-chart">
+                                                                <canvas class="stat-chart-canvas" id="healthState" data-percentage="@HealthState"></canvas>
+                                                                <span class="stat-chart-percentage">@HealthState</span>
+                                                            </div>
+                                                            <div class="stat-details">
+                                                                <h4>Health State</h4>
+                                                                <p>Indicates that the plant is thriving and in good condition.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="column">
+                                                        <div class="stat">
+                                                            <div class="stat-chart">
+                                                                <canvas class="stat-chart-canvas" id="soilMoisture" data-percentage="@SoilMoisture"></canvas>
+                                                                <span class="stat-chart-percentage">@SoilMoisture %</span>
+                                                            </div>
+                                                            <div class="stat-details">
+                                                                <h4>Soil Moisture</h4>
+                                                                <p>Humidity levels impact plant moisture uptake.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="container">
+                                                    <div class="column">
+                                                        <div class="stat">
+                                                            <div class="stat-chart">
+                                                                <canvas class="stat-chart-canvas" id="humidity" data-percentage="@Humidity"></canvas>
+                                                                <span class="stat-chart-percentage">@Humidity %</span>
+                                                            </div>
+                                                            <div class="stat-details">
+                                                                <h4>Humidity</h4>
+                                                                <p>Monitoring humidity and soil moisture ensures optimal plant growth conditions.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="column">
+                                                        <div class="stat">
+                                                            <div class="stat-chart">
+                                                                <canvas class="stat-chart-canvas" id="lightIntensity" data-percentage="@LightIntensity"></canvas>
+                                                                <span class="stat-chart-percentage">@LightIntensity %</span>
+                                                            </div>
+                                                            <div class="stat-details">
+                                                                <h4>Light Intensity</h4>
+                                                                <p>Indicates that the plant is thriving and in good condition.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>No Daily reports available</p>
+                                    }
+                                </div>      
+                                <!--Monthly Reports-->
+                                <div class="tab-content-2" id="monthlyReports">
+                                    @if (Model.PlantReport.MonthlyReports != null)
+                                    {
+                                        <div class="container">
+                                            <div class="column">
+                                                <div class="line-chart">
+                                                    <canvas id="lineChart" width="800" height="400"></canvas>
+                                                    @for (var i = 0; i < Model.PlantReport.MonthlyReports.Count(); i++)
+                                                    {
+                                                        
+                                                        <div class="weekly-reports">
+                                                            @{
+                                                                var AverageTemperature = Model.PlantReport.MonthlyReports[i].averages.AverageTemperature;
+                                                                var AverageSoilMoisture = Model.PlantReport.MonthlyReports[i].averages.AverageSoilMoisture;
+                                                                var AverageHumidity = Model.PlantReport.MonthlyReports[i].averages.AverageHumidity;
+                                                                var AverageLightIntensity = Model.PlantReport.MonthlyReports[i].averages.AverageLightIntensity;
+
+                                                                string strAverageTemperature = AverageTemperature.HasValue ? AverageTemperature.Value.ToString("0.##") : "null";
+                                                                string strAverageSoilMoisture = AverageSoilMoisture.HasValue ? AverageSoilMoisture.Value.ToString("0.##") : "null";
+                                                                string strAverageHumidity = AverageHumidity.HasValue ? AverageHumidity.Value.ToString("0.##") : "null";
+                                                                string strAverageLightIntensity = AverageLightIntensity.HasValue ? AverageLightIntensity.Value.ToString("0.##") : "null";
+
+                                                            }
+
+                                                            <input type="hidden" data-date="@Model.PlantReport.MonthlyReports[i].date.ToString("dd/MM/yyyy")" />
+                                                            <input type="hidden" data-temperature="@strAverageTemperature" />
+                                                            <input type="hidden" data-soil-moisture="@strAverageSoilMoisture" />
+                                                            <input type="hidden" data-humidity="@strAverageHumidity" />
+                                                            <input type="hidden" data-light-intensity="@strAverageLightIntensity" />
+                                                            
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <button class="btn primary" id="downloadMonthlyReports">Download CSV</button>
+                                            </div>
+                                        </div>
+                                        <script>
+
+                                            var ctx = document.querySelectorAll("#lineChart");
+
+                                            var getWeeklyReports = document.querySelectorAll(".weekly-reports");
+                                            var timeLabels = [];
+                                            var soilMoistureData = [];
+                                            var humidityData = [];
+                                            var lightIntensityData = [];
+
+                                            // Loop through each .weekly-reports and collect data for each week
+                                            getWeeklyReports.forEach((element) => {
+                                                timeLabels.push(element.querySelector('[data-date]').getAttribute('data-date'));
+                                                soilMoistureData.push(parseFloat(element.querySelector('[data-soil-moisture]').getAttribute('data-soil-moisture')));
+                                                humidityData.push(parseFloat(element.querySelector('[data-humidity]').getAttribute('data-humidity')));
+                                                lightIntensityData.push(parseFloat(element.querySelector('[data-light-intensity]').getAttribute('data-light-intensity')));
+                                            });
+
+
+                                            // Loop through each week and create a line chart
+                                            for (let i = 0; i < timeLabels.length; i++) {
+
+                                                const lineChart = new Chart(ctx, {
+                                                    type: 'line',
+                                                    data: {
+                                                        labels: timeLabels,
+                                                        datasets: [
+                                                            {
+                                                                label: 'Soil Moisture',
+                                                                data: soilMoistureData, // Use the collected data for all weeks
+                                                                borderColor: 'rgba(54, 162, 235, 1)',
+                                                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                                                borderWidth: 1
+                                                            },
+                                                            {
+                                                                label: 'Humidity',
+                                                                data: humidityData, // Use the collected data for all weeks
+                                                                borderColor: 'rgba(255, 206, 86, 1)',
+                                                                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                                                                borderWidth: 1
+                                                            },
+                                                            {
+                                                                label: 'Light Intensity',
+                                                                data: lightIntensityData, // Use the collected data for all weeks
+                                                                borderColor: 'rgba(75, 192, 192, 1)',
+                                                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                                                borderWidth: 1
+                                                            }
+                                                        ]
+                                                    },
+                                                    options: {
+                                                        scales: {
+                                                            y: {
+                                                                beginAtZero: true,
+                                                                title: {
+                                                                    display: true,
+                                                                    text: 'Percentage'
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        </script>
+                                    }
+
+                                    else
+                                    {
+                                        <p>No Monthly reports available</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <!--Device Status-->
+                        <div class="tab-content-1" id="device-status">
+                            <div class="container">
+                                @if(Model.DeviceAPISensorStatusRequest != null)
+                                {
+                                    @foreach (var x in Model.DeviceAPISensorStatusRequest)
+                                    {
+                                        <div class="column-4">
+                                            <div class="stat">
+                                                <div class="stat-chart">
+                                                    <canvas class="stat-chart-canvas" id="@x.SensorType" data-percentage="@(x.IsInError ? 100 : 0)" data-bool="@x.IsInError"></canvas>
+                                                    @if (x.IsInError)
+                                                    {
+                                                        <span class="stat-chart-percentage">@x.SensorType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="stat-chart-percentage" style="color:#F19348">@x.IsInError</span>
+                                                    }
+                                                </div>
+                                                <div class="stat-details">
+                                                    <h5>@x.SensorType Status</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <!--Location-->
+                        <div class="tab-content-1" id="location">
+                            <div class="container">
+                                <div class="column">
+                                    <div class="legend" data-location="@Model.Location">
+                                        <h3>Location</h3>
+                                        <p>@Model.Location</p>
+                                        <p>@Model.Level</p>
+                                    </div>
+                                </div>
+                                <div class="column">
+                                    <div class="floorplan" style="background-image: url('/images/floorplanner-background.png')">
+                                        <!-- Grid cells -->
+                                        <!-- Rows -->
+                                        <div class="cell"> </div>
+                                        <div class="cell">A</div>
+                                        <div class="cell">B</div>
+                                        <div class="cell">C</div>
+                                        <div class="cell">D</div>
+                                        <div class="cell">E</div>
+                                        <div class="cell">F</div>
+                                        <div class="cell">G</div>
+                                        <!-- Columns -->
+                                        <div class="cell">1</div>
+                                        <div class="cell" id="A1"></div>
+                                        <div class="cell" id="B1"></div>
+                                        <div class="cell" id="C1"></div>
+                                        <div class="cell" id="D1"></div>
+                                        <div class="cell" id="E1"></div>
+                                        <div class="cell" id="F1"></div>
+                                        <div class="cell" id="G1"></div>
+                                        <div class="cell">2</div>
+                                        <div class="cell" id="A2"></div>
+                                        <div class="cell" id="B2"></div>
+                                        <div class="cell" id="C2"></div>
+                                        <div class="cell" id="D2"></div>
+                                        <div class="cell" id="E2"></div>
+                                        <div class="cell" id="F2"></div>
+                                        <div class="cell" id="G2"></div>
+                                        <div class="cell">3</div>
+                                        <div class="cell" id="A3"></div>
+                                        <div class="cell" id="B3"></div>
+                                        <div class="cell" id="C3"></div>
+                                        <div class="cell" id="D3"></div>
+                                        <div class="cell" id="E3"></div>
+                                        <div class="cell" id="F3"></div>
+                                        <div class="cell" id="G3"></div>
+                                        <div class="cell">4</div>
+                                        <div class="cell" id="A4"></div>
+                                        <div class="cell" id="B4"></div>
+                                        <div class="cell" id="C4"></div>
+                                        <div class="cell" id="D4"></div>
+                                        <div class="cell" id="E4"></div>
+                                        <div class="cell" id="F4"></div>
+                                        <div class="cell" id="G4"></div>
+                                        <div class="cell">5</div>
+                                        <div class="cell" id="A5"></div>
+                                        <div class="cell" id="B5"></div>
+                                        <div class="cell" id="C5"></div>
+                                        <div class="cell" id="D5"></div>
+                                        <div class="cell" id="E5"></div>
+                                        <div class="cell" id="F5"></div>
+                                        <div class="cell" id="G5"></div>
+                                        <div class="cell">6</div>
+                                        <div class="cell" id="A6"></div>
+                                        <div class="cell" id="B6"></div>
+                                        <div class="cell" id="C6"></div>
+                                        <div class="cell" id="D6"></div>
+                                        <div class="cell" id="E6"></div>
+                                        <div class="cell" id="F6"></div>
+                                        <div class="cell" id="G6"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                $('.legend').each(function () {
+                                    var location = $(this).data("location");
+                                    $('#' + location).addClass('plant');
+                                });
+                            </script>
+                        </div>
+                        <!--Edit-->
+                        <div class="tab-content-1" id="edit">
+                            <div class="container">
+                                <div class="column-8">
+                                    @using (Html.BeginForm("UpdatePlant", "Plants", FormMethod.Post, new { enctype = "multipart/form-data", id="editPlantForm" }))
+                                    {
+                                        <div class="error">@ViewBag.Error</div>
+
+                                        @Html.HiddenFor(model => model.Id)
+
+                                        <div class="user-input">
+                                            @Html.LabelFor(model => model.Name)
+                                            @Html.TextBoxFor(model => model.Name, new { @class = "form-control"})
+                                            @Html.ValidationMessageFor(model => model.Name)
+                                        </div>
+                                        <div class="user-input">
+                                            @Html.LabelFor(model => model.Desc)
+                                            @Html.TextAreaFor(model => model.Desc, new { @class = "form-control", rows = "4" })
+                                            @Html.ValidationMessageFor(model => model.Desc)
+                                        </div>
+                                        @if (accessLevel.Equals("A") || accessLevel.Equals("S"))
+                                        {
+                                            <div class="user-input">
+                                                @Html.LabelFor(model => model.UserId)
+                                                <select asp-for="@Model.UserId" asp-items="Model.UserSelectList" class="form-control"></select>
+                                                @Html.ValidationMessageFor(model => model.UserId)
+                                            </div>
+                                            <div class="user-input">
+                                                @Html.LabelFor(model => model.DeviceId)
+                                                <select asp-for="@Model.DeviceId" asp-items="Model.PlantDeviceList" class="form-control">
+                                                    @if (@Model.DeviceId != null)
+                                                    {
+                                                        <option value="@Model.DeviceId" selected>@Model.DeviceId - Current Device Selected</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option selected>Please select a device</option>
+                                                    }
+                                                </select>
+                                                @Html.ValidationMessageFor(model => model.DeviceId)
+                                            </div>
+                                        }
+                                        <div class="user-input">
+                                            @Html.LabelFor(model => model.Location)
+                                            @Html.TextBoxFor(model => model.Location, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.Location)
+                                        </div>
+                                        <!-- Adding the Level field -->
+                                        <div class="user-input">
+                                            @Html.LabelFor(model => model.Level)
+                                            @Html.TextBoxFor(model => model.Level, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.Level)
+                                        </div>
+                                        <input class="btn primary" type="submit" value="Submit" />
+                                    }
+                                </div>
+                                <div class="column-4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                //Daily Reports
+                $(".stat-chart-canvas").each(function () {
+                    var canvas = $(this).prop("id");
+                    var percentage = $(this).data("percentage");
+
+                    if (percentage >= 50) {
+                        DailyReports(canvas, percentage, '#578072');
+                    } else {
+                        DailyReports(canvas, percentage, '#F19348');
+                    }
+                });
+
+                function DailyReports(canvasId, percentage, fillColor) {
+                    const ctx = document.getElementById(canvasId).getContext('2d');
+                    const data = [percentage, 100 - percentage];
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: data,
+                                backgroundColor: [
+                                    fillColor, '#FBFBFB'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            circumference: 360,
+                            rotation: 270,
+                            cutout: '80%',
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    enabled: false
+                                }
+                            }
+                        }
+                    });
+                }
+
+
+
+
+            </script>
+        </div>
+    </div>
+</div>
+

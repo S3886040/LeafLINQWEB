@@ -1,0 +1,53 @@
+﻿@model LeafLINQWeb.Models.LoginModel;
+@using Microsoft.AspNetCore.Http;
+
+<div class="login-wrapper">
+    <div class="login-box">
+
+        <div class="login-header">
+            <h3>Email confirmation</h3>
+        </div>
+        <div class="login-header">
+            <pre>Please enter your registered email address and then
+click the 'Send' button.
+After which you can then enter your received verification code in 
+the corresponding field below. 
+            </pre>
+            
+        </div>
+
+        @using (Html.BeginForm("EmailCode", "NewLogin", FormMethod.Post))
+        {
+        <!--form asp-action="EmailCode" asp-controller="NewLogin" method="post" target="_blank"-->
+                
+            @Html.ValidationMessage("Error", new { @class = "text-danger"})
+           
+            <div class="user-input">
+                <label for="Email">Email</label>
+                <input type="text" required class="form-control" id="Email" name="Email" value=@Context.Session.GetString(nameof(LeafLINQWeb.Models.LoginModel.Email))>
+            </div>
+
+            <div class="user-input">
+                <input class="btn btn-secondary" type="submit" value="Send"/>
+            </div>
+                        
+            <div class="user-input">
+                <label for="CodeEntered">Emailed Code</label>
+                <div class="user-input">
+                    <input type="text" class="form-control" id="CodeEntered" name="CodeEntered">
+                </div>                
+            </div>
+           
+            <input type="submit" value="Confirm" />
+                      
+            
+        <!--/form-->
+        }
+    </div>
+        
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

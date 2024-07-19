@@ -1,0 +1,71 @@
+﻿@model List<LeafLINQWeb.Models.PlantModel>;
+
+@{
+    ViewData["Title"] = "Plants";
+
+    int totalPlants = ViewBag.TotalNumberOfItems;
+    int skipItems = 10;
+    double totalPages = (double)totalPlants / skipItems;
+    int roundedTotalPages = (int)Math.Ceiling(totalPages);
+ }
+
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+
+        <div class="main-header">
+            <h2>Plants</h2>
+            <a class="btn primary" asp-controller="Plants" asp-action="AddPlant"><i class="fa-solid fa-circle-plus"></i> Add Plant</a>
+        </div>
+
+        <div class="container">
+            <div class="column">
+                <div class="main-table-container">
+                    <div class="main-table-header">
+                        <h4>Your Plants</h4>
+                        <form method="get" asp-controller="Home" asp-action="Index" class="search-bar">
+                            <input type="text" name="search" id="searchInput" placeholder="Search name and location...">
+                            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </form>
+                    </div>
+                    <table class="main-table">
+                        <thead>
+                            <tr>
+                                <th>Plant Name</th>
+                                <th>Location</th>
+                                <th>Last Watered Date</th>
+                                <th>Health Check Status</th>
+                                <th>Download Report</th>    
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var plant in Model)
+                            {
+                                <tr>
+                                    <td><a href="@Url.Action("Plant", "Plants", new { id = plant.Id })">@plant.Name</a></td>
+                                    <td>@plant.Location</td>
+                                    <td>@plant.LastWateredDate.ToShortDateString()</td>
+                                        <td class="status-circle @(plant.HealthCheckStatus.ToString().ToLower())">@plant.HealthCheckStatus</td>
+                                    <td><a href="@Url.Action("Plant", "Plants", new { id = plant.Id })">Reports <i class="fa-solid fa-download"></i></a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="main-table-footer">
+                        @{
+                            PaginationModel paginationModel = new PaginationModel()
+                            {
+                                CurrentPage = ViewBag.CurrentPage,
+                                TotalPages = roundedTotalPages,
+                                PageSize = skipItems
+                            };
+                        }
+                        @Html.Partial("_Pagination", paginationModel)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

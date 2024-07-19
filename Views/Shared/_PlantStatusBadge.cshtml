@@ -1,0 +1,24 @@
+﻿@*@model LeafLINQWeb.Models.Plants.PlantModel;
+
+@{
+    string badge = "";
+    switch (Model.HealthCheckStatus)
+    {
+        case HealthCheckStatus.Healthy:
+            badge = "heathly";
+            break;
+        case HealthCheckStatus.Alert:
+            badge = "alert";
+            break;
+        case HealthCheckStatus.Inactive:
+            badge = "inactive";
+            break;
+        case HealthCheckStatus.Critical:
+            badge = "critical";
+            break;
+        default:
+            badge = "gray";
+            break;
+    }
+}
+<span class="status-badge @badge">@badge</span>*@

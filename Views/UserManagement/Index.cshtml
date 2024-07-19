@@ -1,0 +1,85 @@
+﻿@model List<LeafLINQWeb.Models.UserModel>
+
+@{
+    ViewData["Title"] = "UserManagement";
+
+    int totalPlants = ViewBag.TotalNumberOfItems;
+    int skipItems = 10;
+    double totalPages = (double)totalPlants / skipItems;
+    int roundedTotalPages = (int)Math.Ceiling(totalPages);
+}
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+
+        <div class="main-header">
+            <h2>User Management</h2>
+            <a class="btn primary" asp-controller="UserManagement" asp-action="AddUser"><i class="fa-solid fa-circle-plus"></i> Add User</a>
+        </div>
+
+        <div class="container">
+            @Html.ValidationMessage("Error", new { @class = "text-danger"})
+            @if (Model != null)
+            {
+                <div class="column">
+                    <div class="main-table-container">
+                        <div class="main-table-header">
+                            <h4>Your Staff Members</h4>
+                        </div>
+
+                        <table class="main-table">
+                            <thead>
+                                <tr>
+                                    <th>Staff Name</th>
+                                    <th>Staff Id</th>
+                                    <th>Last Login Date</th>
+                                    <th>Contact Information</th>
+                                    <th>Block User</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+
+                                        <td><a asp-action="ProfileView" asp-controller="UserManagement" asp-route-userId="@user.Id">@user.FullName</a></td>
+                                        <td>@user.Id</td>
+                                        <td>@user.LastLoginDate.ToShortDateString()</td>
+                                        <td>@user.Email</td>
+                                        @if(user.Block)
+                                        {
+                                            <td><a asp-controller="UserManagement" asp-action="UnBlockUser" asp-route-userId="@user.Id">UnBlock</a></td>
+                                        } else {
+                                            <td><a asp-controller="UserManagement" asp-action="BlockUser" asp-route-userId="@user.Id">Block</a></td>
+                                        }
+
+                                    </tr>
+                                }
+                            </tbody>
+                    </table>
+                    <div class="main-table-footer">
+                      
+                        @{
+                            PaginationModel paginationModel = new PaginationModel()
+                            {
+                                CurrentPage = ViewBag.CurrentPage,
+                                TotalPages = roundedTotalPages,
+                                PageSize = skipItems
+                            };
+                        }
+                        @Html.Partial("_Pagination", paginationModel)
+                    
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

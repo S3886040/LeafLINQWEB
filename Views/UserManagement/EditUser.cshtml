@@ -1,0 +1,86 @@
+﻿@model LeafLINQWeb.Models.UserManagement.UserModelWithFile;
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+        <div class="main-header">
+            <h2>User Profile</h2>
+        </div>
+        <form asp-controller="UserManagement" asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
+            <div class="container">
+
+                
+                @if (Model != null)
+                {
+                    <div class="column">
+                        @Html.ValidationMessage("Error", new { @class = "text-danger"})
+
+                        <input type="hidden" class="form-control" id="Id" name="Id" value="@Model.Id" required>
+                        <input type="hidden" class="form-control" id="PicURL" name="PicUrl" value="@Model.PicUrl" required>
+                        <div class="user-input">
+                            
+                            <label for="fullName">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" name="FullName" value="@Model.FullName" required>
+                            @Html.ValidationMessage("FullName", new { @class = "text-danger"})
+                        </div>
+                        <div class="user-input">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required>
+                            @Html.ValidationMessage("Email", new { @class = "text-danger"})
+                        </div>
+                        <!--div class="user-input">
+                            <label for="Desc">Description</label>
+                            <textarea type="text" class="form-control" id="Desc" name="Desc" value="Model.Desc" required>Model.Desc
+                                
+                            </textarea>
+                            Html.ValidationMessage("Desc", new { class = "text-danger"})
+                            Model.Desc = Model.Desc.Trim();
+                        </div-->
+                        <div class="user-input">
+                            <label for="lastLoginDate">Last Login Date</label>
+                            <input type="text" class="form-control" id="lastLoginDate" name="LastLoginDate" value="@Model.LastLoginDate" readonly required>
+                        </div>
+                        <div class="user-input">
+                            <label for="UserType">Access Level</label>
+                            <select id="UserType" name="UserType">
+                                @if(Model.UserType.Equals('A'))
+                                {
+                                    <option value="A" selected>Admin</option>
+                                    <option value="U" >Regular User</option>
+                                } else
+                                {
+                                    <option value="A" >Admin</option>
+                                    <option value="U" selected>Regular User</option>
+                                }
+
+                            </select>
+                            
+                        </div>
+                        @Html.ValidationMessage("UserType", new { @class = "text-danger"})
+                        
+                        <div class="user-input">
+                            <label for="picture">Profile Picture</label>
+                            <input type="file" class="form-control profile-file" id="picture" name="ImageFile" accept="image/*">
+                        </div>
+                        <input class="btn primary" type="submit" value="Update Profile" />
+                    </div>
+                    <div class="column">
+                        <div class="profile-section-img" style="background-image: url('@Model.PicUrl');"></div>
+                    </div>
+                }
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="~/js/profileImageJs.js" asp-append-version="true"></script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

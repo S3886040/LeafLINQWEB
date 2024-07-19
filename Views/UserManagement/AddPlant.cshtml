@@ -1,0 +1,31 @@
+﻿@model LeafLINQWeb.Models.UserManagement.AddPlantModelView;
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+        <div class="container">
+            <div class="column">
+                <div class="main-header">
+                    <h2>Remove User</h2>
+
+                </div>
+                <div class="content-module">
+                    <p>Confirm to add @Model ?</p>
+                    <div>
+                        <a class="btn primary delete-user-button" asp-controller="UserManagement" asp-action="DeleteUser" asp-route-userId="@Model.User.Id">Delete User</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

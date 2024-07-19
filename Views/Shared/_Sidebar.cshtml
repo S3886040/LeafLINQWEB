@@ -1,0 +1,83 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using LeafLINQWeb.Models;
+
+
+@{
+    var accessLevel = Context.Session.GetString(SessionKeys.UserType);
+    var userFullName = Context.Session.GetString(SessionKeys.UserFullName);
+    var userPicUrl = Context.Session.GetString(SessionKeys.UserPicUrl) ?? "~/images/placeholder-profile.jpeg";
+
+}
+
+<div class="sidebar">
+    <div class="sidebar-mobile" id="sidebarMobile">
+        <i class="fa-solid fa-bars"></i>
+        <i class="fa-solid fa-xmark"></i>
+    </div>
+    <div class="sidebar-content">
+        <div class="content">
+            <div class="logo-wrapper">
+                <img src="~/images/Logo.png" alt="Logo" class="logo" />
+                <div class="leaf-linq">LeafLINQ</div>
+            </div>
+            <div class="seperator"></div>
+            <div class="user-profile">
+                <div class="profile">
+                    <div class="profile-pic">
+                        <img src="@userPicUrl" alt="Profile picture" />
+                    </div>
+                    <div class="user-details">
+                        <!--<div class="user-details--title">MAINTENANCE</div>-->
+                        <div class="user-details--name">@userFullName</div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-list">
+                <a asp-controller="Home" asp-action="Index" class="nav-item">
+                    <img class="icon" src="~/images/dashboard-icon.png" alt="Dashboard Icon" />
+                    <div class="title">
+                        Dashboard
+                    </div>
+                </a>
+                <a asp-controller="Plants" asp-action="Index" class="nav-item">
+                    <img class="icon" src="~/images/plants-icon.png" alt="Plants Icon" />
+                    <div class="title">
+                        Plants
+                    </div>
+                </a>
+                <a asp-controller="Profile" asp-action="Index" class="nav-item">
+                    <img class="icon" src="~/images/profile-icon.png" alt="Profile Icon" />
+                    <div class="title">
+                        Your profile
+                    </div>
+                </a>
+                @if (accessLevel.Equals("A") || accessLevel.Equals("S"))
+                {
+                    <a asp-controller="UserManagement" asp-action="Index" class="nav-item">
+                        <img class="icon" src="~/images/user-management-icon.png" alt="User Management Icon" />
+                        <div class="title">
+                            User management
+                        </div>
+                    </a>
+                }
+                <a asp-controller="Settings" asp-action="Index" class="nav-item">
+                    <img class="icon" src="~/images/add-icon.png" alt="Settings Icon" />
+                    <div class="title">
+                        Settings
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="content">
+            <div class="nav-list logout">
+                <a asp-controller="Login" asp-action="Logout" class="nav-item">
+                    <img class="icon" src="~/images/logout.png" alt="logout Icon" />
+                    <div class="title">
+                        logout
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mobile-overlay"></div>

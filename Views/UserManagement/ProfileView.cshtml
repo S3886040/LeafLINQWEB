@@ -1,0 +1,125 @@
+﻿@model AdminUserModel;
+
+@{
+    ViewData["Title"] = "LeafLINQ";
+
+    int totalPlants = ViewBag.TotalNumberOfItems;
+    int skipItems = 10;
+    double totalPages = (double)totalPlants / skipItems;
+    int roundedTotalPages = (int)Math.Ceiling(totalPages);
+}
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+        <div class="main-header">
+            <h2>Profile</h2>
+
+        </div>
+        <div class="container">
+            <div class="column">
+                <div class="content-module">
+                    <div class="profile-section">
+                        <div class="container">
+                            <div class="column">
+                                <div class="profile-section-img" style="background-image: url('@Model.User.PicUrl');"></div>
+                            </div>
+                            <div class="column">
+                                <div class="description">
+                                    <h3>@Model.User.FullName</h3>
+                                    <p>User Id: @Model.User.Id</p>
+                                    @{
+                                        string access = "";
+                                        if (@Model.User.UserType == 'A')
+                                        {
+                                            access = "Admin";
+                                        }
+                                        else
+                                        {
+                                            access = "Regular";
+                                        }
+                                    }
+                                    <p>Access Level: @access</p>
+                                    <p>Email: @Model.User.Email</p>
+
+                                    <div>
+                                        <a class="btn primary" asp-controller="UserManagement" asp-action="EditUser" asp-route-userId="@Model.User.Id">Edit User</a>
+                                    </div>
+                                    <div>
+                                        <a class="btn primary" asp-controller="UserManagement" asp-action="RemoveUser" asp-route-userId="@Model.User.Id">Remove User</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+@*                    <div class="main-table-container">
+                        <div class="main-table-header">
+                            <h4>Add Plant to @Model.User.FullName's Profile</h4>
+                            <form asp-controller="UserManagement" asp-action="UpdateUsersPlants" method="post" enctype="multipart/form-data" class="plant-form-box">
+                                <div class="plant-select-box">
+                                    <select asp-for="@Model.User.Id" asp-items="Model.AllPlants" class="form-control plant-select-box"></select>
+                                </div>
+                                <div class="plant-box-btn">
+
+                                    <input class="btn primary" type="submit" value="Add Plant To User" />
+                                </div>
+                                <input type="hidden" class="form-control" id="Id" name="Id" value="@Model.User.Id" required>
+                            </form>
+                        </div>
+                    </div>*@
+                    <div class="main-table-container">
+                        <div class="main-table-header">
+                            <h4>@Model.User.FullName's Plants</h4>
+                            <form method="get" asp-controller="Home" asp-action="Index" class="search-bar">
+                                <input type="text" name="search" id="searchInput" placeholder="Search name and location...">
+                                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            </form>
+                        </div>
+
+                        <table class="main-table">
+                            <thead>
+                                <tr>
+                                    <th>Plant Name</th>
+                                    <th>Location</th>
+                                    <th>Last Watered Date</th>
+                                    <th>Health Check Status</th>
+                                    <th>Download Report</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Plants != null)
+                                {
+                                    foreach (var plant in Model.Plants)
+                                    {
+                                        <tr>
+                                            <td><a href="@Url.Action("Plant", "Plants", new { id = plant.Id })">@plant.Name</a></td>
+                                            <td>@plant.Location</td>
+                                            <td>@plant.LastWateredDate.ToShortDateString()</td>
+                                            <td>@plant.HealthCheckStatus</td>
+                                            <td><a href="#">Reports <i class="fa-solid fa-download"></i></a></td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                        <div class="main-table-footer">
+                            @{
+                            PaginationModel paginationModel = new PaginationModel()
+                            {
+                                CurrentPage = ViewBag.CurrentPage,
+                                TotalPages = roundedTotalPages,
+                                PageSize = skipItems
+                            };
+                            }
+                            @Html.Partial("_Pagination", paginationModel)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

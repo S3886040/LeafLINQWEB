@@ -1,0 +1,70 @@
+================================================================================
+Product Name: LeafLINQ System
+Release Version: 0.0.1.0
+Release Date: 26/05/2024
+================================================================================
+
+Introduction:
+--------------------------------------------------------------------------------
+This document provides details about the comprehensive release of the LeafLINQ System, encompassing the LeafLINQ-AP_Node, LeafLINQ-Plant, LeafLINQWeb, and LeafLINQWebAPI. This release includes new features, improvements, and critical bug fixes across both hardware and software components. Please review the document thoroughly to understand the new functionalities and their impact on your usage.
+
+What's New:
+--------------------------------------------------------------------------------
+Hardware Features:
+- Integrated Web Server: Enables users to change local WiFi settings via any standard web browser.
+- Real-time data readings of temperature, humidity, light and soil moisture
+
+Software Features:
+- User Profile Creation and Management.
+- Allocation of Plants by Users and Administrators.
+- Plant Sensor Reporting: Daily and Monthly updates.
+- Export Plant Sensor Data to CSV files.
+- Real-time Plant Health Monitoring: Statistics for light, soil moisture, humidity, and temperature.
+- Automated Email Alerts for critical plant statuses and device errors.
+
+Improvements:
+--------------------------------------------------------------------------------
+- Nil
+
+Bug Fixes:
+--------------------------------------------------------------------------------
+- Nil
+
+Known Issues:
+--------------------------------------------------------------------------------
+- The Celsius to Fahrenheit setting is not currently active. To be enabled in the next release.
+- Health status to be correctly updated to reflect current sensor data readings.
+- Plant searching not returning correct results?
+- Emails from the Scheduler are not formatted correctly. The next release will update the format to a professional HTML page.
+- Emails from the scheduler do not have any Html links directing the user back to the website and placing them in the relevant page
+  for the item being alerted (the plant).
+- Water delivery settings are not used for determining plant health. 
+- Water delivery settings are not set via web page. Thresholds and delivery volume.
+- Incomplete Download Report Functionality
+- Security Vulnerability in File Upload
+- Lack of Confirmation for Email Sent 
+- Lack of Special Character Validation
+- Non-functional Select Option
+- Need for Database Purge. Data synchronization
+
+Installation Instructions:
+--------------------------------------------------------------------------------
+Hardware (LeafLINQ-AP_Node and LeafLINQ-Plant):
+1. Connect the hardware to power and insert the Soil Moisture Sensor into the soil.
+2. Connect to the Access Point Node using the provided WiFi password.
+3. Configure the device via the web interface at 192.168.4.1 to connect to your local WiFi network.
+4. Restart the device if necessary to ensure a successful connection.
+
+Software (LeafLINQWeb and LeafLINQWebAPI):
+- No installation required for web-based components.
+- Access the platform at https://leaflinq.azurewebsites.net/ using a browser on any PC, laptop, or mobile device.
+- Login with a valid email address provided by your system administrator.
+
+Support:
+--------------------------------------------------------------------------------
+For any issues encountered during installation or while using the LeafLINQ system, please contact our support team:
+Email: support@leaflinq.com
+
+Thank you for choosing LeafLINQ. We hope you enjoy the new features and improvements!
+
+================================================================================

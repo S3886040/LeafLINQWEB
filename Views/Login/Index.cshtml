@@ -1,0 +1,32 @@
+@model LoginModel;
+
+<div class="login-wrapper">
+
+    <div class="login-box">
+
+        <h2>Login</h2>
+
+        @using (Html.BeginForm("LoginForm", "Login", FormMethod.Post))
+        {
+            @Html.ValidationMessage("Error", new { @class = "text-danger"})
+            <div class="user-input">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="Email" name="Email" required="required">
+            </div>
+            <div class="user-input">
+                <label for="password">Password</label>
+                <div class="password-container">
+                    <input type="password" class="form-control" id="password" name="password">
+                    <span class="password-toggle" id="togglePassword">Show</span>
+                </div>
+                <a asp-action="EmailCode" asp-Controller="NewLogin">Forgotten Password</a>
+            </div>
+            <input type="submit" value="Login" />
+        }
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

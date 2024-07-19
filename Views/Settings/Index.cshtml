@@ -1,0 +1,53 @@
+﻿@model SettingsModel
+
+@{
+	var temperatureUnits = Model.TemperatureUnit;
+}
+
+
+<div class="main-page">
+	@Html.Partial("_Sidebar")
+	<div class="main-content">
+		<div class="main-header">
+			<h2>Settings</h2>
+			<a class="btn primary" asp-controller="Plants" asp-action="AddPlant"><i class="fa-solid fa-circle-plus"></i> Add Plant</a>
+		</div>
+		<div class="container">
+			<div class="column">
+				<div class="tabs-section" id="tabSettings">
+					<ul class="tabs">
+						<li class="settings-tab active" data-tab="temperatureUnits">Temperature units</li>
+						<li class="settings-tab" data-tab="supports">Supports</li>
+					</ul>
+					<div class="tab-content-1 active" id="temperatureUnits">
+						<div class="container">
+							<div class="column">
+								<div class="user-input">
+									<label for="celsius">Celsius (°C)</label>
+									<input type="radio" id="celsius" name="temperatureUnit" value="Celsius" checked>
+								</div>
+								<div class="user-input">
+									<label for="fahrenheit">Fahrenheit (°F)</label>
+									<input type="radio" id="fahrenheit" name="temperatureUnit" value="fahrenheit">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-content-2" id="supports">
+						<div class="container">
+							<div class="column">
+								<h3>Support</h3>
+								<p>
+									For general inquiries, feedback, or non-urgent support requests, please feel free to contact us at support@smartplant.com. Our support team will respond to your message promptly during our regular business hours.
+									Please note that our support email address is monitored by our team of experts who are dedicated to resolving any issues or concerns you may have. We strive to provide timely and effective assistance to ensure that you have a seamless experience with the Smart Plant system.
+									Thank you for choosing Smart Plant. We appreciate your support and look forward to assisting you with your plant care needs!
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

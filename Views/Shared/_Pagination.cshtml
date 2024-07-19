@@ -1,0 +1,21 @@
+﻿@model PaginationModel
+
+<div class="pagination">
+    <div class="results">
+        <p>@Model.CurrentPage of @Model.TotalPages</p>
+    </div>
+    <div class="results">
+        @if (Model.CurrentPage > 1)
+        {
+            <a href="@Url.Action("Index", new { page = Model.CurrentPage - 1 })" class="btn outline">Previous</a>
+        }
+        else
+        {
+            <span class="btn disabled">Previous</span>
+        }
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a href="@Url.Action("Index", new { page = Model.CurrentPage + 1 })" class="btn primary">Next</a>
+        }
+    </div>
+</div>

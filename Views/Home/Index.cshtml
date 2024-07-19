@@ -1,0 +1,102 @@
+﻿@model List<LeafLINQWeb.Models.PlantModel>
+
+@{
+    ViewData["Title"] = "LeafLINQ";
+
+    int totalPlants = ViewBag.TotalNumberOfItems;
+    int skipItems = 10;
+    double totalPages = (double)totalPlants / skipItems;
+    int roundedTotalPages = (int)Math.Ceiling(totalPages);
+
+    var featurePlants = Model.OrderBy(p => p.HealthCheckStatus switch
+    {
+        HealthCheckStatus.Critical => 1,
+        HealthCheckStatus.Inactive => 2,
+        HealthCheckStatus.Alert => 3,
+        HealthCheckStatus.Healthy => 4,
+        _ => 5
+    }).Take(3);
+    
+}
+
+<div class="main-page">
+    @Html.Partial("_Sidebar")
+    <div class="main-content">
+        <div class="main-header">
+            <h2>Dashboard</h2>
+            <a class="btn primary" asp-controller="Plants" asp-action="AddPlant"><i class="fa-solid fa-circle-plus"></i> Add Plant</a>
+        </div>
+        @if (Model.Count() >= 3)
+        {
+            <div class="container">
+                <div class="column">
+                    <h3>Highlighed Plants</h3>
+                </div>
+            </div>
+            <div class="container">
+                @foreach (var plant in featurePlants)
+                {
+                    <div class="column">      
+                        <div class="feature-card">
+                            <a href="@Url.Action("Plant", "Plants", new { id = plant.Id })">
+                                <div class="card-header" style="background-image: url('@plant.PicUrl');"></div>
+                                <div class="card-body">
+                                    <h4>@plant.Name</h4>
+                                    <p>@plant.Desc</p>
+                                    <span class="status-badge @(plant.HealthCheckStatus.ToString().ToLower())">@plant.HealthCheckStatus.ToString()</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        <div class="container">
+            <div class="column">
+                <div class="main-table-container">
+                    <div class="main-table-header">
+                        <h4>Your Plants</h4>
+                        <form method="get" asp-controller="Home" asp-action="Index" class="search-bar">
+                            <input type="text" name="search" id="searchInput" placeholder="Search name and location...">
+                            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </form>
+                    </div>
+                    <table class="main-table">
+                        <thead>
+                            <tr>
+                                <th>Plant Name</th>
+                                <th>Location</th>
+                                <th>Last Watered Date</th>
+                                <th>Health Check Status</th>
+                                <th>Download Report</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var plant in Model)
+                            {
+                                <tr class="plant">
+                                    <td class="plant-name"><a href="@Url.Action("Plant", "Plants", new { id = plant.Id })">@plant.Name</a></td>
+                                    <td class="plant-location">@plant.Location</td>
+                                    <td>@plant.LastWateredDate.ToShortDateString()</td>
+                                    <td class="status-circle @(plant.HealthCheckStatus.ToString().ToLower())">@plant.HealthCheckStatus</td>
+                                    <td><a href="@Url.Action("Plant", "Plants", new { id = plant.Id })">Reports <i class="fa-solid fa-download"></i></a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="main-table-footer">
+                        @{
+                            PaginationModel paginationModel = new PaginationModel()
+                            {
+                                CurrentPage = ViewBag.CurrentPage,
+                                TotalPages = roundedTotalPages,
+                                PageSize = skipItems
+                            };
+                        }
+                        @Html.Partial("_Pagination", paginationModel)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
