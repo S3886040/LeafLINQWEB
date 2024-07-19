@@ -11,6 +11,12 @@ Many offices adorn their spaces with pot plants to enhance ambiance and producti
 - Web Application: Develop a mobile-friendly web application to receive sensor data and manage plants and customers.
 - Admin Functions: Implement administrative functionalities for managing users, plants, and other administrative tasks.
 
+# Access
+To access the application use the below login information and link.
+
+https://leaflinq.azurewebsites.net/Login
+Email: admin@admin.com
+Password: ZYJreMD!APQTimTwgu@v12
 
 # Contributors
 - Peter Goodwin (s3793762@student.rmit.edu.au)
